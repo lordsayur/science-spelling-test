@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Quiz from '../views/Quiz.vue'
+import AdminQuiz from '../views/AdminQuiz.vue'
 
 const routes = [
   {
@@ -22,6 +23,11 @@ const routes = [
     props: true,
     component: Quiz
   },
+  {
+    path: '/adminQuiz/:id',
+    name: 'AdminQuiz',
+    props: true,
+    component: AdminQuiz
   }
 ]
 
