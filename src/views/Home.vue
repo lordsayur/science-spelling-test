@@ -1,18 +1,34 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="flex flex-col items-center">
+    <ol>
+      <template v-for="quiz in quizzes" :key="quiz.id">
+        <li class="text-4xl m-20">
+          <router-link :to="{ name: 'Quiz', params: { id: quiz.id } }"
+            >⭐{{ quiz.title }}</router-link
+          >
+        </li>
+      </template>
+    </ol>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { ref } from "vue";
+import { useStore } from "vuex";
 
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
-}
+  name: "Home",
+  setup() {
+    const store = useStore();
+
+    const quizzes = ref(store.getters["quizzes/getAllQuizzes"]);
+
+    return {
+      quizzes,
+    };
+  },
+};
 </script>
+
+<style>
+</style>
