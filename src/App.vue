@@ -1,7 +1,11 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__bounceIn"
+      leave-active-class="animate__animated animate__bounceIn"
+    >
+      <router-view />
+    </transition>
   </div>
   <router-view/>
 </template>
