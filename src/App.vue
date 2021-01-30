@@ -8,8 +8,10 @@
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Pangolin&display=swap");
+html {
+  background: rgb(255, 254, 251);
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: "Pangolin", cursive;
