@@ -24,7 +24,7 @@
               :class="`${
                 questions[wordIndex].isCorrect[index]
                   ? 'border-gray-900'
-                  : 'border-red-500'
+                  : 'border-red-500 animate__animated  animate__shakeX'
               } h-16 w-16 text-center m-5 border-4 rounded-lg`"
               type="text"
               maxlength="1"
