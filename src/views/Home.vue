@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center">
     <ol>
       <template v-for="quiz in quizzes" :key="quiz.id">
-        <li class="text-4xl m-20">
+        <li class="text-xl m-10">
           <router-link :to="{ name: 'Quiz', params: { id: quiz.id } }"
             >⭐{{ quiz.title }}</router-link
           >
