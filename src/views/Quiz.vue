@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col items-center">
-    <h1 class="text-5xl m-20">⭐{{ quizDetials.title }}</h1>
+    <h1 class="text-2xl mt-10">⭐{{ quizDetials.title }}</h1>
     <div v-if="isFinished" class="flex flex-col items-center">
-      <h1 class="text-4xl">
+      <h1 class="text-4xl mt-10">
         Your Score is {{ score.actual }} / {{ score.total }}
       </h1>
       <button
@@ -16,7 +16,7 @@
       <p>Question {{ wordIndex + 1 }} / {{ questions.length }}</p>
       <fieldset
         :disabled="canClickNext"
-        class="flex justify-center items-center text-4xl my-10"
+        class="flex justify-center flex-wrap items-center text-xl my-5"
       >
         <template v-for="(letter, index) in getLetters(wordIndex)" :key="index">
           <span v-if="isHidden(index)">
@@ -25,14 +25,14 @@
                 questions[wordIndex].isCorrect[index]
                   ? 'border-gray-900'
                   : 'border-red-500 animate__animated  animate__shakeX'
-              } h-16 w-16 text-center m-5 border-4 rounded-lg`"
+              } h-10 w-10 text-center m-1 border-4 rounded-lg`"
               type="text"
               maxlength="1"
               v-model="questions[wordIndex].answers[index]"
               @focus="questions[wordIndex].answers[index] = ''"
             />
           </span>
-          <span v-else class="m-5">{{ letter }}</span>
+          <span v-else class="m-1">{{ letter }}</span>
         </template>
       </fieldset>
       <transition
@@ -45,7 +45,7 @@
         <button
           @click="canClickNext = check()"
           v-show="checkCounter < 3 && !canClickNext"
-          class="mx-2 p-4 border-2 border-yellow-300 rounded-lg"
+          class="mx-2 p-2 border-2 border-yellow-300 rounded-lg"
         >
           Check
         </button>
@@ -57,6 +57,14 @@
           {{ wordIndex == questions.length - 1 ? "Check Score" : "Next Word" }}
         </button>
       </div>
+      <transition
+        enter-active-class="animate__animated animate__heartBeat"
+        leave-active-class="animate__animated animate__heartBeat"
+      >
+        <p v-show="message" id="message" class="m-5">
+          {{ message }}
+        </p>
+      </transition>
     </div>
   </div>
 </template>
