@@ -1,16 +1,6 @@
 <template>
   <div class="container mx-auto overflow-hidden">
-    <div class="flex flex-col items-center">
-      <div class="m-10 flex flex-col items-center">
-        <h1 class="text-5xl mb-5">Science Spelling Test</h1>
-        <h2 class="text-xl">❤ by Teacher Amirah ❤</h2>
-      </div>
-      <ul class="m-5">
-        <li>
-          <router-link to="/">Main Menu</router-link>
-        </li>
-      </ul>
-    </div>
+    <TheNavbar />
     <hr />
     <transition
       mode="out-in"
@@ -21,6 +11,16 @@
     </transition>
   </div>
 </template>
+
+<script>
+import TheNavbar from "@/components/TheNavbar";
+
+export default {
+  name: "App",
+
+  components: { TheNavbar },
+};
+</script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Pangolin&display=swap");
