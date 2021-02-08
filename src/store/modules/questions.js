@@ -6,7 +6,11 @@ const state = () => ({
 const getters = {
   getQuestions: state => {
     return (ids) => {
-      return state.questions.filter(q => ids.includes(q.id))
+      let questions = state.questions.filter(q => ids.includes(q.id))
+      questions.forEach(question => {
+        question.letters = question.letters[0].toUpperCase() + question.letters.substring(1)
+      });
+      return questions
     }
   }
 }
