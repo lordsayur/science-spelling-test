@@ -35,12 +35,7 @@
           <span v-else class="m-1">{{ letter }}</span>
         </template>
       </fieldset>
-      <transition
-        enter-active-class="animate__animated animate__heartBeat"
-        leave-active-class="animate__animated animate__heartBeat"
-      >
-        <p v-show="message" class="m-10">{{ message }}</p></transition
-      >
+      <button v-show="!canClickNext" @click="speak" class="m-3">🔊</button>
       <div class="flex justify-center">
         <button
           @click="canClickNext = check()"
@@ -191,6 +186,23 @@ export default {
       });
     };
 
+    const speak = () => {
+      if (!("speechSynthesis" in window)) {
+        message.value = "Sorry, your device do not know how to talk";
+        return;
+      }
+      let text = new SpeechSynthesisUtterance();
+      let voices = window.speechSynthesis.getVoices();
+      text.voice = voices[3]; // Note: some voices don't support altering params
+      text.voiceURI = "native";
+      text.volume = 1; // 0 to 1
+      text.rate = 0.7; // 0.1 to 10
+      text.pitch = 1; //0 to 2
+      text.text = questions.value[wordIndex.value].letters;
+      text.lang = "en-US";
+      window.speechSynthesis.speak(text);
+    };
+
     randomizeHiddenLetters();
     generateMetaData();
 
@@ -207,6 +219,7 @@ export default {
       checkCounter,
       score,
       message,
+      speak,
     };
   },
 };
