@@ -14,6 +14,9 @@
     </div>
     <div v-else class="flex flex-col items-center justify-center">
       <p>Question {{ wordIndex + 1 }} / {{ questions.length }}</p>
+      <p class="mt-2" v-show="showCounter">
+        {{ counter }} second{{ counter < 2 ? "" : "s" }} left
+      </p>
       <fieldset
         :disabled="canClickNext"
         class="flex justify-center flex-wrap items-center text-xl my-5"
@@ -65,7 +68,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 import getQuizDetails from "../composables/getQuizDetails.js";
 export default {
@@ -80,6 +83,9 @@ export default {
     const { quizDetials, questions, getLetters } = getQuizDetails(props.id);
 
     const wordIndex = ref(0);
+    const counter = ref(0);
+    const showCounter = ref(true);
+    const counterFn = ref(null);
     const canClickNext = ref(false);
     const isFinished = ref(false);
     const checkCounter = ref(0);
@@ -100,6 +106,7 @@ export default {
       if (wordIndex.value == questions.value.length - 1) {
         isFinished.value = true;
       }
+      if (!isFinished.value) timer();
       wordIndex.value++;
       checkCounter.value = 0;
       message.value = "";
@@ -132,16 +139,11 @@ export default {
 
       if (result) {
         message.value = "Yayy!! 🎉";
+        clearInterval(counterFn.value);
         return result;
       }
 
       message.value = "Please try again.. 😃";
-
-      if (checkCounter.value > 2) {
-        message.value = "Sorry... ☹";
-        score.value.actual--;
-        return true;
-      }
     };
 
     const randomizeHiddenLetters = () => {
@@ -186,6 +188,19 @@ export default {
       });
     };
 
+    const timer = () => {
+      counter.value = 20;
+      counterFn.value = setInterval(() => {
+        counter.value--;
+        if (counter.value <= 0) {
+          clearInterval(counterFn.value);
+          message.value = "Sorry... ☹";
+          score.value.actual--;
+          canClickNext.value = true;
+        }
+      }, 1000);
+    };
+
     const speak = () => {
       if (!("speechSynthesis" in window)) {
         message.value = "Sorry, your device do not know how to talk";
@@ -203,10 +218,16 @@ export default {
       window.speechSynthesis.speak(text);
     };
 
+    onMounted(() => {
+      timer();
+    });
+
     randomizeHiddenLetters();
     generateMetaData();
 
     return {
+      counter,
+      showCounter,
       quizDetials,
       wordIndex,
       canClickNext,
