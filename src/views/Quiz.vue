@@ -208,7 +208,7 @@ export default {
       }
       let text = new SpeechSynthesisUtterance();
       let voices = window.speechSynthesis.getVoices();
-      text.voice = voices[3]; // Note: some voices don't support altering params
+      text.voice = voices[0]; // Note: some voices don't support altering params
       text.voiceURI = "native";
       text.volume = 1; // 0 to 1
       text.rate = 0.7; // 0.1 to 10
