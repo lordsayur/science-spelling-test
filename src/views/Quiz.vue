@@ -71,6 +71,7 @@
 import { ref, computed, onMounted } from "vue";
 
 import { useConfiguration } from "@composables/useConfiguration";
+import { getQuizDetails } from "@composables/getQuizDetails";
 export default {
   name: "Quiz",
   props: {
@@ -80,6 +81,7 @@ export default {
     },
   },
   setup(props) {
+    const { quizDetails, questions, getLetters } = getQuizDetails(props.id);
     const { configuration } = useConfiguration();
 
     const wordIndex = ref(0);
@@ -226,12 +228,7 @@ export default {
     generateMetaData();
 
     return {
-      counter,
-      showCounter,
-      quizDetials,
-      wordIndex,
-      canClickNext,
-      isFinished,
+      quizDetails,
       questions,
       getLetters,
       isHidden,
