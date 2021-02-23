@@ -18,6 +18,12 @@
       "@composables/*": [
         "./composables/*"
       ],
+      "@enums/*": [
+        "./enums/*"
+      ],
+      "@assets/*": [
+        "./assets/*"
+      ],
     }
   }
 }
