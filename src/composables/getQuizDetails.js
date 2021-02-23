@@ -4,9 +4,9 @@ import { useStore } from 'vuex';
 export const getQuizDetails = (id) => {
   const store = useStore();
 
-  const quizDetials = store.getters["quizzes/getQuizDetails"](id);
+  const quizDetails = store.getters["quizzes/getQuizDetails"](id);
   const questions = reactive({
-    data: store.getters["questions/getQuestions"](quizDetials.questionsId),
+    data: store.getters["questions/getQuestions"](quizDetails.questionsId),
     get total() { return this.data.length },
     getLetters(question) {
       return this.data[question].letters
