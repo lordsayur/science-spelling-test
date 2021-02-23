@@ -171,36 +171,27 @@ export default {
     };
 
     const check = () => {
-      if (
-        Object.values(questions.value[wordIndex.value].answers).some(
-          (answer) => answer == ""
-        )
-      ) {
-        message.value = "Make sure fill all missing letters.. 😄";
-        return false;
+      if (questions.isSomeAnswersMissing(questionNumber.index)) {
+        message.update("Make sure fill all missing letters.. 😄");
+        return;
       }
 
-      checkCounter.value++;
+      questions
+        .getCorrectAnswers(questionNumber.index)
+        .forEach((answer, index) => {
+          let question = questions.data[questionNumber.index];
+          questions.getIsCorrect(questionNumber.index)[question.hidden[index]] =
+            answer == question.answers[question.hidden[index]];
+        });
 
-      questions.value[wordIndex.value].correctAnswers.forEach(
-        (answer, index) => {
-          let word = questions.value[wordIndex.value];
-          questions.value[wordIndex.value].isCorrect[word.hidden[index]] =
-            answer == word.answers[word.hidden[index]];
-        }
-      );
-
-      let result = Object.values(
-        questions.value[wordIndex.value].isCorrect
-      ).every((correct) => correct);
-
-      if (result) {
+      if (questions.isAllAnswersCorrect(questionNumber.index)) {
         message.value = "Yayy!! 🎉";
-        clearInterval(counterFn.value);
-        return result;
+        timer.stopTimer();
+        send(QuizMachineEnum.transition.CORRECT);
+        return;
       }
 
-      message.value = "Please try again.. 😃";
+      message.update("Please try again.. 😃");
     };
 
     const randomizeHiddenLetters = () => {
