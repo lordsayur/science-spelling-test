@@ -72,6 +72,7 @@ import { ref, computed, onMounted } from "vue";
 
 import { useConfiguration } from "@composables/useConfiguration";
 import { getQuizDetails } from "@composables/getQuizDetails";
+import { useQuizMachine } from "@composables/useQuizMachine";
 export default {
   name: "Quiz",
   props: {
@@ -82,6 +83,7 @@ export default {
   },
   setup(props) {
     const { quizDetails, questions, getLetters } = getQuizDetails(props.id);
+    const { state, send } = useQuizMachine();
     const { configuration } = useConfiguration();
 
     const wordIndex = ref(0);
@@ -231,7 +233,8 @@ export default {
       quizDetails,
       questions,
       getLetters,
-      isHidden,
+      state,
+      send,
       nextWord,
       check,
       checkCounter,
