@@ -38,7 +38,23 @@
           <span v-else class="m-1">{{ letter }}</span>
         </template>
       </fieldset>
-      <button v-show="!canClickNext" @click="speak" class="m-3">🔊</button>
+      <button
+        v-show="state.matches(`quizState.${QuizMachineEnum.state.ANSWERING}`)"
+        @click="
+          speakHuman('amirah', questions.getLetters(questionNumber.index), send)
+        "
+        :disabled="
+          state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
+        "
+        class="m-3"
+      >
+        🔊
+        {{
+          state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
+            ? "..."
+            : ""
+        }}
+      </button>
       <div class="flex justify-center">
         <button
           @click="canClickNext = check()"
