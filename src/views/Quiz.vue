@@ -109,6 +109,24 @@ export default {
         this.value++;
       },
     });
+    const timer = reactive({
+      value: 0,
+      display() {
+        return `${this.value} second${this.value < 2 ? "" : "s"}`;
+      },
+      decrease() {
+        this.value--;
+      },
+      reset() {
+        this.value = configuration.timerInitialValue;
+      },
+      timesup() {
+        return this.value <= 0;
+      },
+      timerFn: null,
+      stopTimer() {
+        clearInterval(this.timerFn);
+      },
     });
     const message = ref("");
 
@@ -251,6 +269,7 @@ export default {
       speakHuman,
 
       questionNumber,
+      timer,
       nextWord,
       check,
 
