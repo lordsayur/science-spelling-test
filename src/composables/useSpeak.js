@@ -1,13 +1,17 @@
 export const useSpeak = () => {
   const speakHuman = (speaker, filename, send) => {
-    let audio = new Audio(
-      require(`@assets/audio/${speaker}/${filename}.mp3`)
-    );
-    audio.play();
-    send('PLAY')
-    audio.addEventListener('ended', () => {
-      send('END')
-    })
+    try {
+      let audio = new Audio(
+        require(`@assets/audio/${speaker}/${filename}.mp3`)
+      );
+      audio.play();
+      send('PLAY')
+      audio.addEventListener('ended', () => {
+        send('END')
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const speakSynthetic = (speakerId = 3) => {
