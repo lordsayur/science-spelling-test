@@ -159,14 +159,15 @@ export default {
     });
 
     const nextWord = () => {
-      if (wordIndex.value == questions.value.length - 1) {
-        isFinished.value = true;
+      message.reset();
+      if (questionNumber.isLast) {
+        send(QuizMachineEnum.transition.COMPLETE);
+        return;
       }
-      if (!isFinished.value) timer();
-      wordIndex.value++;
-      checkCounter.value = 0;
-      message.value = "";
-      canClickNext.value = false;
+
+      send(QuizMachineEnum.transition.NEXT_QUESTION);
+      questionNumber.next();
+      startTimer();
     };
 
     const check = () => {
