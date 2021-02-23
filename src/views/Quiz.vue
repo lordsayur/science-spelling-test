@@ -143,6 +143,13 @@ export default {
         return this.value;
       },
     });
+    const score = reactive({
+      total: questions.total,
+      actual: questions.total,
+      deduct() {
+        this.actual--;
+      },
+    });
 
     const isHidden = computed(() => {
       return (index) => {
@@ -285,6 +292,7 @@ export default {
       questionNumber,
       timer,
       message,
+      score,
       nextWord,
       check,
 
