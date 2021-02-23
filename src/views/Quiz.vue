@@ -239,15 +239,15 @@ export default {
       });
     };
 
-    const timer = () => {
-      counter.value = 20;
-      counterFn.value = setInterval(() => {
-        counter.value--;
-        if (counter.value <= 0) {
-          clearInterval(counterFn.value);
-          message.value = "Sorry... ☹";
-          score.value.actual--;
-          canClickNext.value = true;
+    const startTimer = () => {
+      timer.reset();
+      timer.timerFn = setInterval(() => {
+        timer.decrease();
+        if (timer.timesup()) {
+          timer.stopTimer();
+          message.update("Sorry... ☹");
+          send(QuizMachineEnum.transition.TIMEOUT);
+          score.deduct();
         }
       }, 1000);
     };
@@ -270,7 +270,7 @@ export default {
     };
 
     onMounted(() => {
-      timer();
+      startTimer();
     });
 
     randomizeHiddenLetters();
