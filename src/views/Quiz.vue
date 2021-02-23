@@ -195,15 +195,18 @@ export default {
     };
 
     const randomizeHiddenLetters = () => {
-      questions.value.forEach((question, index) => {
+      questions.data.forEach((question, index) => {
         const length = question.letters.length;
         const hiddenCount = Math.round(length / 3);
         let hiddenNumbers = [];
         for (let i = 0; i < hiddenCount; i++) {
           let number = Math.floor(Math.random() * length);
+          if (process.env.NODE_ENV === "test") {
+            number = configuration.hiddenCharacter;
+          }
           hiddenNumbers.push(number);
         }
-        questions.value[index].hidden = hiddenNumbers;
+        questions.data[index].hidden = hiddenNumbers;
       });
     };
 
