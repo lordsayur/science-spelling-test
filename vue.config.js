@@ -3,6 +3,7 @@ const path = require("path");
 module.exports = {
   runtimeCompiler: true,
   configureWebpack: {
+    devtool: 'source-map',
     resolve: {
       alias: {
         "@": path.resolve(__dirname, 'src'),
