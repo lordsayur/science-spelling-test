@@ -70,7 +70,7 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 
-import getQuizDetails from "../composables/getQuizDetails.js";
+import { useConfiguration } from "@composables/useConfiguration";
 export default {
   name: "Quiz",
   props: {
@@ -80,7 +80,7 @@ export default {
     },
   },
   setup(props) {
-    const { quizDetials, questions, getLetters } = getQuizDetails(props.id);
+    const { configuration } = useConfiguration();
 
     const wordIndex = ref(0);
     const counter = ref(0);
