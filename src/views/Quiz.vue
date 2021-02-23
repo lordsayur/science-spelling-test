@@ -57,7 +57,7 @@
       <button
         v-show="state.matches(`quizState.${QuizMachineEnum.state.ANSWERING}`)"
         @click="
-          speakHuman('amirah', questions.getLetters(questionNumber.index), send)
+          speakSynthetic(send, questions.data[questionNumber.index].letters)
         "
         :disabled="
           state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
@@ -129,7 +129,7 @@ export default {
     const { quizDetails, questions, getLetters } = getQuizDetails(props.id);
     const { state, send } = useQuizMachine();
     const { configuration } = useConfiguration();
-    const { speakHuman } = useSpeak();
+    const { speakSynthetic } = useSpeak();
 
     const questionNumber = reactive({
       value: 0,
@@ -302,7 +302,7 @@ export default {
       getLetters,
       state,
       send,
-      speakHuman,
+      speakSynthetic,
 
       questionNumber,
       timer,

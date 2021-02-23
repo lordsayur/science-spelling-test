@@ -14,9 +14,9 @@ export const useSpeak = () => {
     }
   }
 
-  const speakSynthetic = (speakerId = 3) => {
+  const speakSynthetic = (send, word, speakerId = 3) => {
     if (!("speechSynthesis" in window)) {
-      message.value = "Sorry, your device do not know how to talk";
+      message.update("Sorry, your device do not know how to talk");
       return;
     }
     let text = new SpeechSynthesisUtterance();
@@ -26,9 +26,14 @@ export const useSpeak = () => {
     text.volume = 1; // 0 to 1
     text.rate = 0.7; // 0.1 to 10
     text.pitch = 1; //0 to 2
-    text.text = questions.value[wordIndex.value].letters;
+    text.text = word;
     text.lang = "en-US";
     window.speechSynthesis.speak(text);
+    send('PLAY')
+
+    text.onend = () => {
+      send('END')
+    }
   }
 
   return {
