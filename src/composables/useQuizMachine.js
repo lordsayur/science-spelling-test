@@ -2,7 +2,7 @@ import { Machine, assign, interpret } from "xstate";
 import { useService } from "@xstate/vue";
 
 import QuizMachineEnum from '@enums/quizMachine';
-import AudioMachineEnum from '@enums/audio';
+import AudioMachineEnum from '@/enums/audioMachine';
 
 const quizMachine = Machine({
   id: "quiz",
