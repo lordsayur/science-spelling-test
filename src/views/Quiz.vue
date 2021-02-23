@@ -94,16 +94,21 @@ export default {
     const { configuration } = useConfiguration();
     const { speakHuman } = useSpeak();
 
-    const wordIndex = ref(0);
-    const counter = ref(0);
-    const showCounter = ref(true);
-    const counterFn = ref(null);
-    const canClickNext = ref(false);
-    const isFinished = ref(false);
-    const checkCounter = ref(0);
-    const score = ref({
-      total: questions.value.length,
-      actual: questions.value.length,
+    const questionNumber = reactive({
+      value: 0,
+      get current() {
+        return this.value + 1;
+      },
+      get index() {
+        return this.value;
+      },
+      get isLast() {
+        return this.value == questions.total - 1;
+      },
+      next() {
+        this.value++;
+      },
+    });
     });
     const message = ref("");
 
@@ -245,6 +250,7 @@ export default {
       send,
       speakHuman,
 
+      questionNumber,
       nextWord,
       check,
 
