@@ -151,10 +151,10 @@ export default {
       },
     });
 
-    const isHidden = computed(() => {
-      return (index) => {
-        let hidden = questions.value[wordIndex.value].hidden;
-        return hidden.some((num) => num == index);
+    const isCurrentLetterHidden = computed(() => {
+      return (currentLetter) => {
+        let hiddenLetters = questions.getHiddenLetters(questionNumber.index);
+        return hiddenLetters.some((letter) => letter == currentLetter);
       };
     });
 
@@ -293,6 +293,8 @@ export default {
       timer,
       message,
       score,
+
+      isCurrentLetterHidden,
       nextWord,
       check,
 
