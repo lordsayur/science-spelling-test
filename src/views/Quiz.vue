@@ -74,14 +74,20 @@ import { useConfiguration } from "@composables/useConfiguration";
 import { getQuizDetails } from "@composables/getQuizDetails";
 import { useQuizMachine } from "@composables/useQuizMachine";
 import { useSpeak } from "@composables/useSpeak";
+
+import QuizMachineEnum from "@enums/quizMachine";
+import AudioMachineEnum from "@enums/audioMachine";
+
 export default {
   name: "Quiz",
+
   props: {
     id: {
       type: [Number, String],
       required: true,
     },
   },
+
   setup(props) {
     const { quizDetails, questions, getLetters } = getQuizDetails(props.id);
     const { state, send } = useQuizMachine();
@@ -241,10 +247,9 @@ export default {
 
       nextWord,
       check,
-      checkCounter,
-      score,
-      message,
-      speak,
+
+      QuizMachineEnum,
+      AudioMachineEnum,
     };
   },
 };
