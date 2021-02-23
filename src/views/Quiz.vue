@@ -223,7 +223,7 @@ export default {
        * };
        */
 
-      questions.value.forEach((question, index) => {
+      questions.data.forEach((question, index) => {
         let hiddenLetters = question.hidden;
         let obj = {
           correctAnswers: [],
@@ -235,7 +235,7 @@ export default {
           obj.answers[hiddenLetter] = "";
           obj.isCorrect[hiddenLetter] = true;
         });
-        questions.value[index] = { ...question, ...obj };
+        questions.data[index] = { ...question, ...obj };
       });
     };
 
