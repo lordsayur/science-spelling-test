@@ -2,13 +2,15 @@
   <div class="container mx-auto overflow-hidden">
     <TheNavbar />
     <hr />
-    <transition
-      mode="out-in"
-      enter-active-class="animate__animated animate__bounceIn"
-      leave-active-class="animate__animated animate__bounceIn"
-    >
-      <router-view />
-    </transition>
+    <router-view v-slot="{ Component }">
+      <transition
+        mode="out-in"
+        enter-active-class="animate__animated animate__bounceIn"
+        leave-active-class="animate__animated animate__bounceIn"
+      >
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
