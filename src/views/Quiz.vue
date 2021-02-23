@@ -1,7 +1,12 @@
 <template>
   <div class="flex flex-col items-center">
-    <h1 class="text-2xl mt-10">⭐{{ quizDetials.title }}</h1>
-    <div v-if="isFinished" class="flex flex-col items-center">
+    <h1 class="text-2xl mt-10">⭐{{ quizDetails.title }}</h1>
+
+    <!-- Finish Quiz Message -->
+    <div
+      v-if="state.matches(`quizState.${QuizMachineEnum.state.QUIZ_FINISH}`)"
+      class="flex flex-col items-center"
+    >
       <h1 class="text-4xl mt-10">
         Your Score is {{ score.actual }} / {{ score.total }}
       </h1>
@@ -12,27 +17,38 @@
         Back to Main Menu
       </button>
     </div>
+    <!-- Quiz Question Content -->
     <div v-else class="flex flex-col items-center justify-center">
-      <p>Question {{ wordIndex + 1 }} / {{ questions.length }}</p>
-      <p class="mt-2" v-show="showCounter">
-        {{ counter }} second{{ counter < 2 ? "" : "s" }} left
+      <p id="question-number">
+        Question {{ questionNumber.current }} / {{ questions.total }}
+      </p>
+      <p
+        class="mt-2"
+        v-show="state.matches(`quizState.${QuizMachineEnum.state.ANSWERING}`)"
+      >
+        {{ timer.display() }} left
       </p>
       <fieldset
-        :disabled="canClickNext"
+        :disabled="
+          state.matches(`quizState.${QuizMachineEnum.state.QUESTION_FINISH}`)
+        "
         class="flex justify-center flex-wrap items-center text-xl my-5"
       >
-        <template v-for="(letter, index) in getLetters(wordIndex)" :key="index">
-          <span v-if="isHidden(index)">
+        <template
+          v-for="(letter, index) in getLetters(questionNumber.index)"
+          :key="index"
+        >
+          <span v-if="isCurrentLetterHidden(index)">
             <input
               :class="`${
-                questions[wordIndex].isCorrect[index]
+                questions.getIsCorrect(questionNumber.index)[index]
                   ? 'border-gray-900'
                   : 'border-red-500 animate__animated  animate__shakeX'
               } h-10 w-10 text-center m-1 border-4 rounded-lg`"
               type="text"
               maxlength="1"
-              v-model="questions[wordIndex].answers[index]"
-              @focus="questions[wordIndex].answers[index] = ''"
+              v-model="questions.data[questionNumber.index].answers[index]"
+              @focus="questions.data[questionNumber.index].answers[index] = ''"
             />
           </span>
           <span v-else class="m-1">{{ letter }}</span>
@@ -57,26 +73,31 @@
       </button>
       <div class="flex justify-center">
         <button
-          @click="canClickNext = check()"
-          v-show="checkCounter < 3 && !canClickNext"
+          @click="check"
+          v-show="state.matches(`quizState.${QuizMachineEnum.state.ANSWERING}`)"
           class="mx-2 p-2 border-2 border-yellow-300 rounded-lg"
         >
           Check
         </button>
         <button
           @click="nextWord"
-          v-show="canClickNext"
+          :disabled="
+            state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
+          "
+          v-show="
+            state.matches(`quizState.${QuizMachineEnum.state.QUESTION_FINISH}`)
+          "
           class="mx-2 p-4 border-2 border-yellow-300 rounded-lg bg-yellow-300"
         >
-          {{ wordIndex == questions.length - 1 ? "Check Score" : "Next Word" }}
+          {{ questionNumber.isLast ? "Check Score" : "Next Word" }}
         </button>
       </div>
       <transition
         enter-active-class="animate__animated animate__heartBeat"
         leave-active-class="animate__animated animate__heartBeat"
       >
-        <p v-show="message" id="message" class="m-5">
-          {{ message }}
+        <p v-show="message.isEmpty()" id="message" class="m-5">
+          {{ message.display() }}
         </p>
       </transition>
     </div>
