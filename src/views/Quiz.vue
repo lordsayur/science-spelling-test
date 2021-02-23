@@ -128,7 +128,21 @@ export default {
         clearInterval(this.timerFn);
       },
     });
-    const message = ref("");
+    const message = reactive({
+      value: "",
+      reset() {
+        this.value = "";
+      },
+      update(value) {
+        this.value = value;
+      },
+      display() {
+        return this.value;
+      },
+      isEmpty() {
+        return this.value;
+      },
+    });
 
     const isHidden = computed(() => {
       return (index) => {
@@ -270,6 +284,7 @@ export default {
 
       questionNumber,
       timer,
+      message,
       nextWord,
       check,
 
