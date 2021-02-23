@@ -1,7 +1,7 @@
 import { computed, reactive } from 'vue';
 import { useStore } from 'vuex';
 
-const getQuizDetails = (id) => {
+export const getQuizDetails = (id) => {
   const store = useStore();
 
   const quizDetials = store.getters["quizzes/getQuizDetails"](id);
@@ -48,11 +48,9 @@ const getQuizDetails = (id) => {
 
 
   return {
-    quizDetials,
+    quizDetails,
     questions,
 
     getLetters
   }
 }
-
-export default getQuizDetails
