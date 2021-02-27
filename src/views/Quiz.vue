@@ -19,26 +19,29 @@
     </div>
     <!-- Quiz Question Content -->
     <div v-else class="flex flex-col items-center justify-center">
+      <!-- Question Number -->
       <p id="question-number">
         Question {{ questionNumber.current }} / {{ questions.total }}
       </p>
-      <p
-        class="mt-2"
-        v-show="state.matches(`quizState.${QuizMachineEnum.state.ANSWERING}`)"
-      >
-        {{ timer.display() }} left
-      </p>
-      <fieldset
+      <!-- Letters -->
+      <transition-group
+        tag="fieldset"
         :disabled="
           state.matches(`quizState.${QuizMachineEnum.state.QUESTION_FINISH}`)
         "
         class="flex justify-center flex-wrap items-center text-xl my-5"
+        mode="out-in"
+        appear
+        @before-enter="beforeEnter"
+        @enter="enter"
+        @after-enter="afterEnter"
       >
-        <template
-          v-for="(letter, index) in getLetters(questionNumber.index)"
-          :key="index"
-        >
-          <span v-if="isCurrentLetterHidden(index)">
+        <template v-for="(letter, index) in getLetters(questionNumber.index)">
+          <span
+            v-if="isCurrentLetterHidden(index)"
+            :data-index="index"
+            :key="`${questionNumber.index}.${index}`"
+          >
             <input
               :class="`${
                 questions.getIsCorrect(questionNumber.index)[index]
@@ -51,47 +54,68 @@
               @focus="questions.data[questionNumber.index].answers[index] = ''"
             />
           </span>
-          <span v-else class="m-1">{{ letter }}</span>
+          <span
+            v-else
+            class="m-1"
+            :data-index="index"
+            :key="`${questionNumber.index}.${index}`"
+          >
+            {{ letter }}</span
+          >
         </template>
-      </fieldset>
-      <button
-        v-show="state.matches(`quizState.${QuizMachineEnum.state.ANSWERING}`)"
-        @click="
-          speakSynthetic(send, questions.data[questionNumber.index].letters)
+      </transition-group>
+      <!-- Ansering Actions -->
+      <div
+        v-if="
+          [
+            QuizMachineEnum.state.STARTING,
+            QuizMachineEnum.state.ANSWERING,
+          ].includes(state.value.quizState)
         "
-        :disabled="
-          state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
-        "
-        class="m-3"
       >
-        🔊
-        {{
-          state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
-            ? "..."
-            : ""
-        }}
-      </button>
-      <div class="flex justify-center">
+        <!-- Check button -->
         <button
+          id="checkBtn"
           @click="check"
-          v-show="state.matches(`quizState.${QuizMachineEnum.state.ANSWERING}`)"
           class="mx-2 p-2 border-2 border-yellow-300 rounded-lg"
         >
           Check
         </button>
+        <!-- Speak button -->
         <button
-          @click="nextWord"
+          @click="
+            speakSynthetic(send, questions.data[questionNumber.index].letters)
+          "
           :disabled="
             state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
           "
-          v-show="
-            state.matches(`quizState.${QuizMachineEnum.state.QUESTION_FINISH}`)
-          "
-          class="mx-2 p-4 border-2 border-yellow-300 rounded-lg bg-yellow-300"
+          class="m-3"
         >
-          {{ questionNumber.isLast ? "Check Score" : "Next Word" }}
+          🔊
+          {{
+            state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
+              ? "..."
+              : ""
+          }}
         </button>
       </div>
+      <!-- Next button -->
+      <button
+        id="nextBtn"
+        @click="nextWord"
+        :disabled="
+          state.matches(`audioState.${AudioMachineEnum.state.PLAYING}`)
+        "
+        v-if="
+          state.matches(`quizState.${QuizMachineEnum.state.QUESTION_FINISH}`)
+        "
+        class="mx-2 p-2 border-2 border-yellow-300 rounded-lg bg-yellow-300"
+      >
+        {{ questionNumber.isLast ? "Check Score" : "Next Word" }}
+      </button>
+      <!-- Timer -->
+      <p class="mt-2">{{ timer.display() }}</p>
+      <!-- Message -->
       <transition
         enter-active-class="animate__animated animate__heartBeat"
         leave-active-class="animate__animated animate__heartBeat"
@@ -147,9 +171,14 @@ export default {
       },
     });
     const timer = reactive({
-      value: 0,
+      value: configuration.timerInitialValue,
       display() {
-        return `${this.value} second${this.value < 2 ? "" : "s"}`;
+        if (
+          state.value.matches(`quizState.${QuizMachineEnum.state.STARTING}`)
+        ) {
+          return "Ready...";
+        }
+        return `${this.value} second${this.value < 2 ? "" : "s"} left`;
       },
       decrease() {
         this.value--;
@@ -204,7 +233,6 @@ export default {
 
       send(QuizMachineEnum.transition.NEXT_QUESTION);
       questionNumber.next();
-      startTimer();
     };
 
     const check = () => {
@@ -289,12 +317,39 @@ export default {
       }, 1000);
     };
 
+    const beforeEnter = (el) => {
+      el.classList.add("invisible");
+    };
+
+    const enter = (el, done) => {
+      questions
+        .getLetters(questionNumber.index)
+        .split("")
+        .forEach((letter, index) => {
+          setTimeout(() => {
+            el.classList.remove("invisible");
+            el.classList.add("animate__animated", "animate__bounceInRight");
+          }, el.dataset.index * 300);
+          if (index == questions.getTotalLetters(questionNumber.index) - 1)
+            el.addEventListener("animationend", done);
+        });
+    };
+
+    const afterEnter = (el) => {
+      el.classList.remove("animate__animated", "animate__bounceInRight");
+
+      if (
+        el.dataset.index !=
+        questions.getTotalLetters(questionNumber.index) - 1
+      ) {
+        return;
+      }
+      send(QuizMachineEnum.transition.START);
+      startTimer();
+    };
+
     randomizeHiddenLetters();
     generateMetaData();
-
-    onMounted(() => {
-      startTimer();
-    });
 
     onUnmounted(() => {
       service.stop();
@@ -319,6 +374,10 @@ export default {
 
       QuizMachineEnum,
       AudioMachineEnum,
+
+      beforeEnter,
+      enter,
+      afterEnter,
     };
   },
 };
