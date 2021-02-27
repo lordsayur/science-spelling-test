@@ -66,5 +66,8 @@ const quizMachine = Machine({
 const service = interpret(quizMachine).start();
 
 export const useQuizMachine = () => {
-  return useService(service)
+  return {
+    ...useService(service),
+    service
+  }
 }
