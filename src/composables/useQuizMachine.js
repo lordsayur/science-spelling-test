@@ -9,15 +9,14 @@ const quizMachine = Machine({
   type: "parallel",
   states: {
     quizState: {
-      initial: QuizMachineEnum.state.ANSWERING,
-      context: {
-        timer: 0,
-      },
+      initial: QuizMachineEnum.state.STARTING,
       states: {
+        starting: {
+          on: {
+            START: { target: QuizMachineEnum.state.ANSWERING }
+          }
+        },
         answering: {
-          entry: assign({
-            timer: (context, event) => context.timer + 1,
-          }),
           on: {
             CORRECT: QuizMachineEnum.state.QUESTION_FINISH,
             TIMEOUT: QuizMachineEnum.state.QUESTION_FINISH,
@@ -25,7 +24,7 @@ const quizMachine = Machine({
         },
         questionFinish: {
           on: {
-            NEXT_QUESTION: QuizMachineEnum.state.ANSWERING,
+            NEXT_QUESTION: QuizMachineEnum.state.STARTING,
             COMPLETE: QuizMachineEnum.state.QUIZ_FINISH,
           },
         },
