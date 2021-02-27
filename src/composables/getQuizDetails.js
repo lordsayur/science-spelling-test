@@ -11,6 +11,9 @@ export const getQuizDetails = (id) => {
     getLetters(question) {
       return this.data[question].letters
     },
+    getTotalLetters(question) {
+      return this.data[question].letters.length
+    },
     getHiddenLetters(question) {
       return this.data[question].hidden
     },
