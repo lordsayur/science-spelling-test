@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive } from "vue";
+import { computed, onMounted, onUnmounted, reactive } from "vue";
 
 import { useConfiguration } from "@composables/useConfiguration";
 import { getQuizDetails } from "@composables/getQuizDetails";
@@ -127,7 +127,7 @@ export default {
 
   setup(props) {
     const { quizDetails, questions, getLetters } = getQuizDetails(props.id);
-    const { state, send } = useQuizMachine();
+    const { state, send, service } = useQuizMachine();
     const { configuration } = useConfiguration();
     const { speakSynthetic } = useSpeak();
 
@@ -294,6 +294,10 @@ export default {
 
     onMounted(() => {
       startTimer();
+    });
+
+    onUnmounted(() => {
+      service.stop();
     });
 
     return {
