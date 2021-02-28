@@ -1,43 +1,44 @@
+const TEST_QUIZ_URL = '/quiz/900'
+const messageId = '#message'
+
 describe('Quiz', () => {
-  it('Shoud display warning message if user click check button with empty input', () => {
-    cy.visit('/quiz/1')
+  it('Should display warning message if user click check button with empty input', () => {
+    cy.visit(TEST_QUIZ_URL)
     cy.get('#checkBtn').click()
-    cy.get('#message').should((message) => {
-      expect(message).to.contain('Make sure fill all missing letters.')
-    })
+    cy.verifyMessage(messageId, 'Make sure fill all missing letters.')
   })
-  it('Shoud display error message if user click check button with incorrect input', () => {
-    cy.visit('/quiz/1')
-    cy.get('input').type('h')
+  it('Should display error message if user click check button with incorrect input', () => {
+    cy.visit(TEST_QUIZ_URL)
+    cy.get('[data-index="0"]').type('t', { timeout: 5000 })
     cy.get('#checkBtn').click()
-    cy.get('#message').should((message) => {
-      expect(message).to.contain('Please try again')
-    })
+    cy.verifyMessage(messageId, 'Please try again')
   })
-  it('Shoud display valid message if user click check button with correct input', () => {
-    cy.visit('/quiz/1')
-    cy.get('input').type('H')
+  it('Should display valid message if user click check button with correct input', () => {
+    cy.visit(TEST_QUIZ_URL)
+    cy.get('[data-index="0"]').type('T', { timeout: 5000 })
     cy.get('#checkBtn').click()
-    cy.get('#message').should((message) => {
-      expect(message).to.contain('Yayy')
-    })
+    cy.verifyMessage(messageId, 'Yayy')
   })
-  it('Shoud display next question if user click next button', () => {
-    cy.visit('/quiz/1')
-    cy.get('input').type('H')
+  it('Should display next question if user click next button', () => {
+    cy.visit(TEST_QUIZ_URL)
+    cy.get('[data-index="0"]').type('T', { timeout: 5000 })
     cy.get('#checkBtn').click()
     cy.get('#nextBtn').click()
-    cy.get('#question-number').should((message) => {
-      expect(message).to.contain('2')
-    })
+    cy.verifyMessage('#question-number', '2')
   })
-  it('Shoud display sorry message if user unable to answer within time limit', () => {
-    cy.visit('/quiz/1')
-    cy.get('input').type('H')
+  it('Should display sorry message if user unable to answer within time limit', () => {
+    cy.visit(TEST_QUIZ_URL)
+    cy.get('[data-index="0"]').type('T', { timeout: 5000 })
     cy.get('#checkBtn').click()
+    cy.get('#nextBtn').click()
+    cy.verifyMessage(messageId, 'Sorry...')
+  })
+  it('Should display sorry message if user unable to answer within time limit', () => {
+    cy.visit(TEST_QUIZ_URL)
+    cy.get('[data-index="0"]').type('T', { timeout: 5000 })
+    cy.get('[data-index="0"]').type('i', { timeout: 5000 })
     cy.get('#checkBtn').click()
-    cy.get('#message', { timeout: 10000 }).should((message) => {
-      expect(message).to.contain('Sorry...')
-    })
+    cy.get('#nextBtn').click()
+    cy.verifyMessage(messageId, 'Yayy')
   })
 })
