@@ -66,6 +66,12 @@ const state = () => ({
       isVisible: true,
       questionsId: [80, 81, 82, 83, 84, 85, 86, 87]
     },
+    {
+      id: 900,
+      title: "Spelling Test 900",
+      isVisible: process.env.NODE_ENV == 'test',
+      questionsId: [900, 901, 902]
+    },
   ]
 })
 
