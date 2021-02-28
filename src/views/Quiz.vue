@@ -354,7 +354,8 @@ export default {
     randomizeHiddenLetters();
     generateMetaData();
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
+      timer.stopTimer();
       service.stop();
     });
 
