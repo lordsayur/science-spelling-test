@@ -1,5 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
+    <!-- Debug Section -->
+    <Debug>state: {{ state.value.quizState }}</Debug>
     <h1 class="text-2xl mt-10">⭐{{ quizDetails.title }}</h1>
 
     <!-- Finish Quiz Message -->
@@ -139,8 +141,12 @@ import { useSpeak } from "@composables/useSpeak";
 import QuizMachineEnum from "@enums/quizMachine";
 import AudioMachineEnum from "@enums/audioMachine";
 
+import Debug from "@/components/Debug";
+
 export default {
   name: "Quiz",
+
+  components: { Debug },
 
   props: {
     id: {
