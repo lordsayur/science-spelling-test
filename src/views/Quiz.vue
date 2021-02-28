@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { computed, onMounted, onUnmounted, reactive } from "vue";
+import { computed, onBeforeUnmount, reactive } from "vue";
 
 import { useConfiguration } from "@composables/useConfiguration";
 import { getQuizDetails } from "@composables/getQuizDetails";
@@ -266,11 +266,14 @@ export default {
         let hiddenNumbers = [];
         for (let i = 0; i < hiddenCount; i++) {
           let number = Math.floor(Math.random() * length);
+
           if (process.env.NODE_ENV === "test") {
-            number = configuration.hiddenCharacter;
+            number = configuration.hiddenCharacter[i];
           }
+
           hiddenNumbers.push(number);
         }
+
         questions.data[index].hidden = hiddenNumbers;
       });
     };
@@ -329,7 +332,7 @@ export default {
           setTimeout(() => {
             el.classList.remove("invisible");
             el.classList.add("animate__animated", "animate__bounceInRight");
-          }, el.dataset.index * 300);
+          }, el.dataset.index * configuration.letterAnimationDelay);
           if (index == questions.getTotalLetters(questionNumber.index) - 1)
             el.addEventListener("animationend", done);
         });
