@@ -14,5 +14,6 @@ module.exports = {
       },
       extensions: ['.js', '.vue', '.json']
     }
-  }
+  },
+  publicPath: process.env.NODE_ENV === "production" ? "/science-spelling-test/" : "/",
 };
